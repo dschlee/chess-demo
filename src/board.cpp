@@ -101,8 +101,6 @@ bool Board::move_piece(const Position &start, const Position &end)
 
 void Board::draw() const
 {
-    // TODO Columns should have letters a-h.
-    // Changes should be applied to struct Position
     std::cout << std::endl;
     int row = 8;
     // char col = 'a';
@@ -138,33 +136,6 @@ void Board::draw() const
     }
     std::cout << std::endl;
 }
-
-// void Board::print_pieces()
-// {
-//     // TODO
-//     std::cout << "[ ";
-//     for (auto &piece : pieces_)
-//     {
-//         std::cout << piece << " ";
-//     }
-//     std::cout << "]" << std::endl;
-// }
-
-// void Board::add_piece(int piece)
-// {
-//     // TODO it should accept (char piece_abb, char board_x, int board_y) [e.g. Na1, Rb1]
-//     // Invoke the constructor of class Piece here with vec.emplace_back(<constructor_initialization_list>)
-
-//     // TODO guard check if entered piece_abbrevation and coordinates are valid -> call is_position_valid()
-
-//     pieces_.emplace_back(piece);
-// }
-
-// bool Board::move_piece(int piece)
-// {
-//     // TODO
-//     return true;
-// }
 
 bool Board::is_position_on_board(Position &pos)
 {

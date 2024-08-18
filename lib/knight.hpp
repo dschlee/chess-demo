@@ -7,9 +7,6 @@ public:
     // No-args constructor used for creating default pieces
     Knight();
 
-    // // Proper constructor
-    // Knight(const Position &pos);
-
     // Destructor
     ~Knight() = default;
 

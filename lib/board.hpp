@@ -29,15 +29,18 @@ private:
     template <typename T, size_t N>
     void print_piece_array(std::array<T, N> &pieces);
 
+    // Gets the piece at a given position
+    Piece *get_piece(const Position &pos) const;
+
+    // Checks if the given position is within bounds
+    bool is_position_on_board(Position &pos);
+
 public:
     // Constructor initializes the board with nullptrs
     Board();
 
     // Default destructor
     ~Board() = default;
-
-    // Gets the piece at a given position
-    Piece *get_piece(const Position &pos) const;
 
     // Sets a piece at a given position
     void set_piece(char piece_type, Position pos);
@@ -50,7 +53,4 @@ public:
 
     // Displays the current state of the board
     void draw() const;
-
-    // Checks if the given position is within bounds
-    bool is_position_on_board(Position &pos);
 };

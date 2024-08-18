@@ -7,9 +7,6 @@ public:
     // No-args constructor used for creating default pieces
     Rook();
 
-    // // Proper constructor
-    // Rook(const Position &pos);
-
     // Destructor
     ~Rook() = default;
 
