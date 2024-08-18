@@ -19,6 +19,9 @@ protected:
     PieceType piece_type_;
 
 public:
+    // Default constructor with invalid position
+    Piece();
+
     // Constructor
     Piece(const Position &pos, PieceType piece_type);
 

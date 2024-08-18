@@ -1,5 +1,8 @@
 #include "../lib/piece.hpp"
 
+Piece::Piece()
+    : pos_(-1, -1), piece_type_(PieceType::Rook) {}
+
 Piece::Piece(const Position &pos, PieceType piece_type)
     : pos_(pos), piece_type_(piece_type) {}
 

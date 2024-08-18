@@ -4,6 +4,8 @@
 class Rook final : public Piece
 {
 public:
+    Rook();
+
     // Constructor
     Rook(const Position &pos);
 

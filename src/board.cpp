@@ -15,11 +15,51 @@ Piece *Board::get_piece(const Position &pos) const
     return nullptr;
 }
 
-void Board::set_piece(Piece &piece, const Position &pos)
+// void Board::set_piece(Piece &piece, const Position &pos)
+// {
+//     if (pos.row >= 0 && pos.row < BOARD_SIZE && pos.col >= 0 && pos.col < BOARD_SIZE)
+//     {
+//         board.at(pos.row).at(pos.col) = &piece;
+//     }
+// }
+
+void Board::set_piece(char piece_type, Position pos)
 {
-    if (pos.row >= 0 && pos.row < BOARD_SIZE && pos.col >= 0 && pos.col < BOARD_SIZE)
+    if (!is_position_on_board(pos))
     {
-        board.at(pos.row).at(pos.col) = &piece;
+        return;
+    }
+
+    switch (piece_type)
+    {
+    case 'R':
+        if (rook_count < MAX_PIECES_ROOK)
+        {
+            rooks.at(rook_count) = Rook(pos);
+            board.at(pos.row).at(pos.col) = &rooks.at(rook_count);
+            std::cout << "Rook set on (" << pos.row << ", " << pos.col << ")" << std::endl;
+            ++rook_count;
+        }
+        break;
+    case 'K':
+        std::cout << "Knight" << std::endl;
+        break;
+    default:
+        std::cout << "Invalid piece type" << std::endl;
+    }
+}
+
+void Board::print_pieces()
+{
+    std::cout << std::endl
+              << "Pieces on the board:" << std::endl;
+    for (auto rook : rooks)
+    {
+        // Do not print default pieces with position (-1, -1)
+        if (rook.get_position().row != -1)
+        {
+            std::cout << rook.get_piece_type() << "(" << rook.get_position().row << ", " << rook.get_position().col << ")" << std::endl;
+        }
     }
 }
 
@@ -31,8 +71,10 @@ bool Board::move_piece(const Position &start, const Position &end)
 
 void Board::draw() const
 {
+    std::cout << std::endl;
     int row = 8;
-    char col = 'a';
+    // char col = 'a';
+    int col = 1;
     for (int i = BOARD_SIZE - 1; i >= 0; --i)
     {
         for (int j = 0; j < BOARD_SIZE; ++j)
@@ -51,13 +93,13 @@ void Board::draw() const
             {
                 std::cout << row-- << ' ';
             }
-            else if (board.at(i).at(j) == nullptr)
+            else if (board.at(j).at(i) == nullptr)
             {
                 std::cout << ". ";
             }
             else
             {
-                std::cout << board.at(i).at(j)->get_piece_type() << ' ';
+                std::cout << board.at(j).at(i)->get_piece_type() << ' ';
             }
         }
         std::cout << std::endl;
@@ -92,8 +134,15 @@ void Board::draw() const
 //     return true;
 // }
 
-// bool Board::is_position_valid(int piece)
-// {
-//     // TODO
-//     return true;
-// }
+bool Board::is_position_on_board(Position &pos)
+{
+    if (pos.row >= 1 &&
+        pos.row < BOARD_SIZE &&
+        pos.col >= 1 &&
+        pos.col < BOARD_SIZE)
+    {
+        return true;
+    }
+    std::cout << "Position invalid: Position out of bounds." << std::endl;
+    return false;
+}

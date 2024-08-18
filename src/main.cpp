@@ -8,11 +8,16 @@ int main()
 {
     Board board;
     board.draw();
-    Rook rook(Position(1, 1));
+    // Rook rook(Position(1, 1));
+    // Knight knight(Position(0, 2));
 
-    board.set_piece(rook, Position(8, 8));
+    // board.set_piece(rook);
+    // board.set_piece(knight);
 
-    // TODO position should only be defined once!
+    board.set_piece('R', Position(1, 2));
+    board.set_piece('R', Position(5, 2));
+
+    board.print_pieces();
 
     board.draw();
     std::cout << std::endl;
