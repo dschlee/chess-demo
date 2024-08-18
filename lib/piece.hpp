@@ -1,8 +1,17 @@
 #pragma once
-#include "../lib/position.hpp"
 
 // Forward declaration
 class Board;
+
+// Struct representing the position of pieces on the board
+struct Position
+{
+    int row;
+    int col;
+
+    Position(int r = -1, int c = -1)
+        : row(r), col(c) {}
+};
 
 // Enum representing different types of pieces
 enum class PieceType
@@ -19,9 +28,6 @@ protected:
     PieceType piece_type_;
 
 public:
-    // Default constructor with invalid position
-    Piece();
-
     // Constructor
     Piece(const Position &pos, PieceType piece_type);
 
