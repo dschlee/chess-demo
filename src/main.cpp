@@ -8,10 +8,13 @@ int main()
 {
     Board board;
     board.draw();
-    // board.add_piece(5);
-    // board.add_piece(32);
-    // board.print_pieces();
+    Rook rook(Position(0, 0));
 
+    board.set_piece(rook, Position(0, 2));
+
+    // TODO position should only be defined once!
+
+    board.draw();
     std::cout << std::endl;
     return 0;
 }

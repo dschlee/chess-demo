@@ -9,6 +9,26 @@ Board::Board()
     }
 }
 
+Piece *Board::get_piece(const Position &pos) const
+{
+    // TODO
+    return nullptr;
+}
+
+void Board::set_piece(Piece &piece, const Position &pos)
+{
+    if (pos.row >= 0 && pos.row < BOARD_SIZE && pos.col >= 0 && pos.col < BOARD_SIZE)
+    {
+        board.at(pos.row).at(pos.col) = &piece;
+    }
+}
+
+bool Board::move_piece(const Position &start, const Position &end)
+{
+    // TODO
+    return true;
+}
+
 void Board::draw() const
 {
     for (int i = 0; i < BOARD_SIZE; ++i)
@@ -19,9 +39,14 @@ void Board::draw() const
             {
                 std::cout << ". ";
             }
+            else
+            {
+                std::cout << board[i][j]->get_piece_type() << ' ';
+            }
         }
         std::cout << std::endl;
     }
+    std::cout << std::endl;
 }
 
 // void Board::print_pieces()
