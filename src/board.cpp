@@ -31,17 +31,33 @@ bool Board::move_piece(const Position &start, const Position &end)
 
 void Board::draw() const
 {
-    for (int i = 0; i < BOARD_SIZE; ++i)
+    int row = 8;
+    char col = 'a';
+    for (int i = BOARD_SIZE - 1; i >= 0; --i)
     {
         for (int j = 0; j < BOARD_SIZE; ++j)
         {
-            if (board.at(i).at(j) == nullptr)
+            // std::cout << i << j << ", ";
+
+            if (i == 0 && j == 0)
+            {
+                std::cout << "  ";
+            }
+            else if (i == 0)
+            {
+                std::cout << col++ << ' ';
+            }
+            else if (j == 0)
+            {
+                std::cout << row-- << ' ';
+            }
+            else if (board.at(i).at(j) == nullptr)
             {
                 std::cout << ". ";
             }
             else
             {
-                std::cout << board[i][j]->get_piece_type() << ' ';
+                std::cout << board.at(i).at(j)->get_piece_type() << ' ';
             }
         }
         std::cout << std::endl;

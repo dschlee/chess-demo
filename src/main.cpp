@@ -8,9 +8,9 @@ int main()
 {
     Board board;
     board.draw();
-    Rook rook(Position(0, 0));
+    Rook rook(Position(1, 1));
 
-    board.set_piece(rook, Position(0, 2));
+    board.set_piece(rook, Position(8, 8));
 
     // TODO position should only be defined once!
 

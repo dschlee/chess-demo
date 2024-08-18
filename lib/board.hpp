@@ -2,7 +2,7 @@
 #include <array>
 #include "../lib/piece.hpp"
 
-const int BOARD_SIZE = 8;
+const int BOARD_SIZE = 9;
 
 class Board
 {
