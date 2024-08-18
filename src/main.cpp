@@ -16,6 +16,7 @@ int main()
 
     board.set_piece('R', Position(1, 2));
     board.set_piece('R', Position(5, 2));
+    board.set_piece('K', Position(7, 4));
 
     board.print_pieces();
 

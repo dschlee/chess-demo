@@ -33,19 +33,55 @@ void Board::set_piece(char piece_type, Position pos)
     switch (piece_type)
     {
     case 'R':
-        if (rook_count < MAX_PIECES_ROOK)
+        if (rook_count >= MAX_PIECES_ROOK)
         {
-            rooks.at(rook_count) = Rook(pos);
-            board.at(pos.row).at(pos.col) = &rooks.at(rook_count);
-            std::cout << "Rook set on (" << pos.row << ", " << pos.col << ")" << std::endl;
-            ++rook_count;
+            std::cout << "Maximum amount of rooks reached." << std::endl;
+            break;
         }
+        update_piece_pos_in_array(rooks, pos);
+        std::cout << "Rook set on (" << pos.row << ", " << pos.col << ")" << std::endl;
+        ++rook_count;
         break;
     case 'K':
-        std::cout << "Knight" << std::endl;
+        if (knight_count >= MAX_PIECES_ROOK)
+        {
+            std::cout << "Maximum amount of Knight reached." << std::endl;
+            break;
+        }
+        update_piece_pos_in_array(knights, pos);
+        std::cout << "Knight set on (" << pos.row << ", " << pos.col << ")" << std::endl;
+        ++knight_count;
         break;
     default:
         std::cout << "Invalid piece type" << std::endl;
+    }
+}
+
+template <typename T, size_t N>
+void Board::update_piece_pos_in_array(std::array<T, N> &pieces, const Position &pos)
+{
+    for (auto &piece : pieces)
+    {
+        // Object is not in the game
+        if (piece.get_position().col == -1)
+        {
+            piece.set_position(pos);
+            board.at(pos.row).at(pos.col) = &piece;
+            break;
+        }
+    }
+}
+
+template <typename T, size_t N>
+void Board::print_piece_array(std::array<T, N> &pieces)
+{
+    for (auto &piece : pieces)
+    {
+        // Do not print default pieces with position (-1, -1)
+        if (piece.get_position().row != -1)
+        {
+            std::cout << piece.get_piece_type() << "(" << piece.get_position().row << ", " << piece.get_position().col << ")" << std::endl;
+        }
     }
 }
 
@@ -53,14 +89,8 @@ void Board::print_pieces()
 {
     std::cout << std::endl
               << "Pieces on the board:" << std::endl;
-    for (auto rook : rooks)
-    {
-        // Do not print default pieces with position (-1, -1)
-        if (rook.get_position().row != -1)
-        {
-            std::cout << rook.get_piece_type() << "(" << rook.get_position().row << ", " << rook.get_position().col << ")" << std::endl;
-        }
-    }
+    print_piece_array(rooks);
+    print_piece_array(knights);
 }
 
 bool Board::move_piece(const Position &start, const Position &end)
@@ -71,6 +101,8 @@ bool Board::move_piece(const Position &start, const Position &end)
 
 void Board::draw() const
 {
+    // TODO Columns should have letters a-h.
+    // Changes should be applied to struct Position
     std::cout << std::endl;
     int row = 8;
     // char col = 'a';

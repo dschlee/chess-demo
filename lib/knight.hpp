@@ -4,8 +4,11 @@
 class Knight final : public Piece
 {
 public:
-    // Constructor
-    Knight(const Position &pos);
+    // No-args constructor used for creating default pieces
+    Knight();
+
+    // // Proper constructor
+    // Knight(const Position &pos);
 
     // Destructor
     ~Knight() = default;

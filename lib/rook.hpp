@@ -4,10 +4,11 @@
 class Rook final : public Piece
 {
 public:
+    // No-args constructor used for creating default pieces
     Rook();
 
-    // Constructor
-    Rook(const Position &pos);
+    // // Proper constructor
+    // Rook(const Position &pos);
 
     // Destructor
     ~Rook() = default;
