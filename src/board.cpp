@@ -9,55 +9,6 @@ Board::Board()
     }
 }
 
-Piece *Board::get_piece(const Position &pos) const
-{
-    return board.at(pos.row).at(pos.col);
-}
-
-void Board::spawn_piece(char piece_type, Position pos)
-{
-    if (!is_position_on_board(pos))
-    {
-        return;
-    }
-
-    switch (piece_type)
-    {
-    case 'B':
-        if (bishop_count >= MAX_PIECES_BISHOP)
-        {
-            std::cout << "Maximum amount of bishops reached." << std::endl;
-            break;
-        }
-        spawn_piece_pos_in_array(bishops, pos);
-        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
-        ++bishop_count;
-        break;
-    case 'R':
-        if (rook_count >= MAX_PIECES_ROOK)
-        {
-            std::cout << "Maximum amount of rooks reached." << std::endl;
-            break;
-        }
-        spawn_piece_pos_in_array(rooks, pos);
-        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
-        ++rook_count;
-        break;
-    case 'K':
-        if (knight_count >= MAX_PIECES_ROOK)
-        {
-            std::cout << "Maximum amount of Knight reached." << std::endl;
-            break;
-        }
-        spawn_piece_pos_in_array(knights, pos);
-        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
-        ++knight_count;
-        break;
-    default:
-        std::cout << "Invalid piece type" << std::endl;
-    }
-}
-
 template <typename T, size_t N>
 void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &pos)
 {
@@ -66,22 +17,13 @@ void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &p
         // Object is not in the game
         if (piece.get_position().col == -1)
         {
-            // TODO output: Set R(1, 1). Remove duplicate in spawn_piece
+            std::cout << "Set " << piece.get_piece_type()
+                      << "(" << pos.row << ", " << pos.col << ")" << std::endl;
             piece.set_position(pos);
             board.at(pos.row).at(pos.col) = &piece;
             break;
         }
     }
-}
-
-void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end)
-{
-    piece->set_position(end);
-    board.at(start.row).at(start.col) = nullptr;
-    board.at(end.row).at(end.col) = piece;
-    // std::cout << piece->get_piece_type()
-    //           << " moved: (" << start.row << ", " << start.col << ") -> ("
-    //           << end.row << ", " << end.col << ")" << std::endl;
 }
 
 template <typename T, size_t N>
@@ -97,13 +39,82 @@ void Board::print_piece_array(std::array<T, N> &pieces)
     }
 }
 
-void Board::print_pieces()
+void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end)
 {
-    std::cout << std::endl
-              << "Pieces on the board:" << std::endl;
-    print_piece_array(bishops);
-    print_piece_array(rooks);
-    print_piece_array(knights);
+    piece->set_position(end);
+    board.at(start.row).at(start.col) = nullptr;
+    board.at(end.row).at(end.col) = piece;
+}
+
+Piece *Board::get_piece(const Position &pos) const
+{
+    return board.at(pos.row).at(pos.col);
+}
+
+bool Board::is_position_on_board(const Position &pos) const
+{
+    if (pos.row >= 1 &&
+        pos.row < BOARD_SIZE &&
+        pos.col >= 1 &&
+        pos.col < BOARD_SIZE)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool Board::is_max_piece_type_reached(const char piece_type, const int count, const int max) const
+{
+    if (count >= max)
+    {
+        std::cout << "Maximum number of " << piece_type << " reached." << std::endl;
+        return true;
+    }
+    return false;
+}
+
+void Board::spawn_piece(char piece_type, Position pos)
+{
+    // Check if the position is valid
+    if (!is_position_on_board(pos))
+    {
+        return;
+    }
+
+    // Check if the position is already occupied by another piece
+    Piece *piece = get_piece(pos);
+    if (piece)
+    {
+        std::cout << "Invalid: Position is occupied." << std::endl;
+        return;
+    }
+
+    switch (piece_type)
+    {
+    case 'B':
+        if (!is_max_piece_type_reached(piece_type, bishop_count, MAX_PIECES_BISHOP))
+        {
+            spawn_piece_pos_in_array(bishops, pos);
+            ++bishop_count;
+        }
+        break;
+    case 'K':
+        if (!is_max_piece_type_reached(piece_type, knight_count, MAX_PIECES_KNIGHT))
+        {
+            spawn_piece_pos_in_array(knights, pos);
+            ++knight_count;
+        }
+        break;
+    case 'R':
+        if (!is_max_piece_type_reached(piece_type, rook_count, MAX_PIECES_ROOK))
+        {
+            spawn_piece_pos_in_array(rooks, pos);
+            ++rook_count;
+        }
+        break;
+    default:
+        std::cout << "Invalid piece type." << std::endl;
+    }
 }
 
 void Board::move_piece(const Position &start, const Position &end)
@@ -199,6 +210,15 @@ void Board::move_piece(const Position &start, const Position &end)
               << end.row << ", " << end.col << ")" << std::endl;
 }
 
+void Board::print_pieces()
+{
+    std::cout << std::endl
+              << "Pieces on the board:" << std::endl;
+    print_piece_array(bishops);
+    print_piece_array(rooks);
+    print_piece_array(knights);
+}
+
 void Board::draw() const
 {
     std::cout << std::endl;
@@ -235,16 +255,4 @@ void Board::draw() const
         std::cout << std::endl;
     }
     std::cout << std::endl;
-}
-
-bool Board::is_position_on_board(const Position &pos) const
-{
-    if (pos.row >= 1 &&
-        pos.row < BOARD_SIZE &&
-        pos.col >= 1 &&
-        pos.col < BOARD_SIZE)
-    {
-        return true;
-    }
-    return false;
 }

@@ -1,8 +1,9 @@
 #include <iostream>
 #include "../lib/board.hpp"
 #include "../lib/piece.hpp"
-#include "../lib/rook.hpp"
+#include "../lib/bishop.hpp"
 #include "../lib/knight.hpp"
+#include "../lib/rook.hpp"
 
 int main()
 {

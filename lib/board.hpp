@@ -5,9 +5,9 @@
 #include "../lib/rook.hpp"
 
 const int BOARD_SIZE = 9;
-const int MAX_PIECES_ROOK = 4;
-const int MAX_PIECES_KNIGHT = 4;
 const int MAX_PIECES_BISHOP = 4;
+const int MAX_PIECES_KNIGHT = 4;
+const int MAX_PIECES_ROOK = 4;
 
 class Board
 {
@@ -42,6 +42,9 @@ private:
     // Checks if the given position is within bounds
     bool is_position_on_board(const Position &pos) const;
 
+    // Checks if maximum amount of piece types are on the board
+    bool is_max_piece_type_reached(const char piece_type, const int count, const int max) const;
+
 public:
     // Constructor initializes the board with nullptrs
     Board();
@@ -52,11 +55,11 @@ public:
     // Sets a piece at a given position
     void spawn_piece(char piece_type, Position pos);
 
-    // Prints all the valid pieces on the board
-    void print_pieces();
-
     // Executes the move move for a piece from the start position to the end position
     void move_piece(const Position &start, const Position &end);
+
+    // Prints all the valid pieces on the board
+    void print_pieces();
 
     // Displays the current state of the board
     void draw() const;

@@ -1,5 +1,4 @@
 #include "../lib/knight.hpp"
-#include <cmath>
 
 Knight::Knight()
     : Piece(Position(), PieceType::Knight) {}
