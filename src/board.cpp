@@ -30,7 +30,7 @@ void Board::spawn_piece(char piece_type, Position pos)
             break;
         }
         spawn_piece_pos_in_array(rooks, pos);
-        std::cout << "Rook set on (" << pos.row << ", " << pos.col << ")" << std::endl;
+        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
         ++rook_count;
         break;
     case 'K':
@@ -40,7 +40,7 @@ void Board::spawn_piece(char piece_type, Position pos)
             break;
         }
         spawn_piece_pos_in_array(knights, pos);
-        std::cout << "Knight set on (" << pos.row << ", " << pos.col << ")" << std::endl;
+        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
         ++knight_count;
         break;
     default:
@@ -56,6 +56,7 @@ void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &p
         // Object is not in the game
         if (piece.get_position().col == -1)
         {
+            // TODO output: Set R(1, 1). Remove duplicate in spawn_piece
             piece.set_position(pos);
             board.at(pos.row).at(pos.col) = &piece;
             break;
@@ -68,6 +69,9 @@ void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const P
     piece->set_position(end);
     board.at(start.row).at(start.col) = nullptr;
     board.at(end.row).at(end.col) = piece;
+    // std::cout << piece->get_piece_type()
+    //           << " moved: (" << start.row << ", " << start.col << ") -> ("
+    //           << end.row << ", " << end.col << ")" << std::endl;
 }
 
 template <typename T, size_t N>
@@ -93,23 +97,95 @@ void Board::print_pieces()
 
 void Board::move_piece(const Position &start, const Position &end)
 {
-    if (Piece *piece = get_piece(start))
+    std::cout << "Command: (" << start.row << ", " << start.col << ") -> ("
+              << end.row << ", " << end.col << ")" << std::endl;
+
+    // Ensure the start and end positions are valid
+    if (!is_position_on_board(start))
     {
-        // TODO implement
-        if (piece->can_move(start, end))
-        {
-            // TODO check if end is valid, if no piece blocks the way
-            move_piece_pos_in_array(piece, start, end);
-        }
-        else
-        {
-            std::cout << "Invalid move." << std::endl;
-        }
+        std::cout << "Invalid: Start position is out of bounds." << std::endl;
+        return;
     }
-    else
+    else if (!is_position_on_board(end))
+    {
+        std::cout << "Invalid: End position is out of bounds." << std::endl;
+        return;
+    }
+
+    // Get the pointer of the considered piece at the start position
+    Piece *piece = get_piece(start);
+    Piece *end_piece = get_piece(end);
+
+    // Ensure there is a piece at the start position
+    if (!piece)
     {
         std::cout << "Invalid: No piece at the start position." << std::endl;
+        return;
     }
+
+    // Ensure there is no piece at the end position
+    if (end_piece)
+    {
+        std::cout << "Invalid: End position is occupied." << std::endl;
+        return;
+    }
+
+    // Check if the move is valid according to the piece's movement rules
+    if (!piece->can_move(start, end))
+    {
+        std::cout << "Invalid: Move not possible for " << piece->get_piece_type() << "." << std::endl;
+        return;
+    }
+
+    // Path checking logic for pieces that move in a line
+    if (start.row == end.row) // Horizontal move
+    {
+        int step = (end.col > start.col) ? 1 : -1;
+        for (int col = start.col + step; col != end.col; col += step)
+        {
+            if (board.at(start.row).at(col) != nullptr)
+            {
+                std::cout << "Invalid: Path blocked." << std::endl;
+                return;
+            }
+        }
+    }
+    else if (start.col == end.col) // Vertical move
+    {
+        int step = (end.row > start.row) ? 1 : -1;
+        for (int row = start.row + step; row != end.row; row += step)
+        {
+            if (board.at(row).at(start.col) != nullptr)
+            {
+                std::cout << "Invalid: Path blocked." << std::endl;
+                return;
+            }
+        }
+    }
+    else if (abs(end.row - start.row) == abs(end.col - start.col)) // Diagonal move
+    {
+        int row_step = (end.row > start.row) ? 1 : -1;
+        int col_step = (end.col > start.col) ? 1 : -1;
+        int row = start.row + row_step;
+        int col = start.col + col_step;
+
+        while (row != end.row && col != end.col)
+        {
+            if (board.at(row).at(col) != nullptr)
+            {
+                std::cout << "Invalid: Path blocked." << std::endl;
+                return;
+            }
+            row += row_step;
+            col += col_step;
+        }
+    }
+
+    // Perform the move
+    move_piece_pos_in_array(piece, start, end);
+    std::cout << piece->get_piece_type()
+              << " moved: (" << start.row << ", " << start.col << ") -> ("
+              << end.row << ", " << end.col << ")" << std::endl;
 }
 
 void Board::draw() const
@@ -159,6 +235,5 @@ bool Board::is_position_on_board(const Position &pos) const
     {
         return true;
     }
-    std::cout << "Position invalid: Position out of bounds." << std::endl;
     return false;
 }
