@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 // Struct representing the position of pieces on the board
 struct Position
@@ -13,6 +14,7 @@ struct Position
 // Enum representing different types of pieces
 enum class PieceType
 {
+    Bishop = 'B',
     Knight = 'K',
     Rook = 'R'
 };

@@ -23,6 +23,16 @@ void Board::spawn_piece(char piece_type, Position pos)
 
     switch (piece_type)
     {
+    case 'B':
+        if (bishop_count >= MAX_PIECES_BISHOP)
+        {
+            std::cout << "Maximum amount of bishops reached." << std::endl;
+            break;
+        }
+        spawn_piece_pos_in_array(bishops, pos);
+        std::cout << "Set " << piece_type << "(" << pos.row << ", " << pos.col << ")" << std::endl;
+        ++bishop_count;
+        break;
     case 'R':
         if (rook_count >= MAX_PIECES_ROOK)
         {
@@ -91,6 +101,7 @@ void Board::print_pieces()
 {
     std::cout << std::endl
               << "Pieces on the board:" << std::endl;
+    print_piece_array(bishops);
     print_piece_array(rooks);
     print_piece_array(knights);
 }

@@ -1,20 +1,24 @@
 #pragma once
 #include <array>
-#include "../lib/rook.hpp"
+#include "../lib/bishop.hpp"
 #include "../lib/knight.hpp"
+#include "../lib/rook.hpp"
 
 const int BOARD_SIZE = 9;
 const int MAX_PIECES_ROOK = 4;
 const int MAX_PIECES_KNIGHT = 4;
+const int MAX_PIECES_BISHOP = 4;
 
 class Board
 {
 private:
     std::array<std::array<Piece *, BOARD_SIZE>, BOARD_SIZE> board{};
-    std::array<Rook, MAX_PIECES_ROOK> rooks;
+    std::array<Bishop, MAX_PIECES_ROOK> bishops;
     std::array<Knight, MAX_PIECES_KNIGHT> knights;
-    int rook_count = 0;
+    std::array<Rook, MAX_PIECES_ROOK> rooks;
+    int bishop_count = 0;
     int knight_count = 0;
+    int rook_count = 0;
 
     /**
      * Template method to set the position of a piece in the provided array.

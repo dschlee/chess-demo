@@ -10,7 +10,7 @@ int main()
     board.draw();
 
     board.spawn_piece('R', Position(1, 1));
-    board.spawn_piece('K', Position(1, 2));
+    board.spawn_piece('B', Position(1, 2));
     board.print_pieces();
     board.draw();
 
