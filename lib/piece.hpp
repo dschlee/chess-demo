@@ -1,8 +1,5 @@
 #pragma once
 
-// Forward declaration
-class Board;
-
 // Struct representing the position of pieces on the board
 struct Position
 {
@@ -35,10 +32,7 @@ public:
     virtual ~Piece() = default;
 
     // Pure virtual function to check if a move is valid
-    virtual bool can_move(const Position &start, const Position &end, const Board &board) const = 0;
-
-    // Pure virtual function to execute the move
-    virtual void move(const Position &start, const Position &end, Board &board) = 0;
+    virtual bool can_move(const Position &start, const Position &end) const = 0;
 
     // Sets the position of the piece
     void set_position(const Position &pos);

@@ -11,8 +11,5 @@ public:
     ~Knight() = default;
 
     // Check if the move is valid for a Knight
-    virtual bool can_move(const Position &start, const Position &end, const Board &board) const override;
-
-    // Execute the move for a Knight
-    virtual void move(const Position &start, const Position &end, Board &board) override;
+    virtual bool can_move(const Position &start, const Position &end) const override;
 };

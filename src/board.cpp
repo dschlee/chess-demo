@@ -11,19 +11,10 @@ Board::Board()
 
 Piece *Board::get_piece(const Position &pos) const
 {
-    // TODO
-    return nullptr;
+    return board.at(pos.row).at(pos.col);
 }
 
-// void Board::set_piece(Piece &piece, const Position &pos)
-// {
-//     if (pos.row >= 0 && pos.row < BOARD_SIZE && pos.col >= 0 && pos.col < BOARD_SIZE)
-//     {
-//         board.at(pos.row).at(pos.col) = &piece;
-//     }
-// }
-
-void Board::set_piece(char piece_type, Position pos)
+void Board::spawn_piece(char piece_type, Position pos)
 {
     if (!is_position_on_board(pos))
     {
@@ -38,7 +29,7 @@ void Board::set_piece(char piece_type, Position pos)
             std::cout << "Maximum amount of rooks reached." << std::endl;
             break;
         }
-        update_piece_pos_in_array(rooks, pos);
+        spawn_piece_pos_in_array(rooks, pos);
         std::cout << "Rook set on (" << pos.row << ", " << pos.col << ")" << std::endl;
         ++rook_count;
         break;
@@ -48,7 +39,7 @@ void Board::set_piece(char piece_type, Position pos)
             std::cout << "Maximum amount of Knight reached." << std::endl;
             break;
         }
-        update_piece_pos_in_array(knights, pos);
+        spawn_piece_pos_in_array(knights, pos);
         std::cout << "Knight set on (" << pos.row << ", " << pos.col << ")" << std::endl;
         ++knight_count;
         break;
@@ -58,7 +49,7 @@ void Board::set_piece(char piece_type, Position pos)
 }
 
 template <typename T, size_t N>
-void Board::update_piece_pos_in_array(std::array<T, N> &pieces, const Position &pos)
+void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &pos)
 {
     for (auto &piece : pieces)
     {
@@ -70,6 +61,13 @@ void Board::update_piece_pos_in_array(std::array<T, N> &pieces, const Position &
             break;
         }
     }
+}
+
+void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end)
+{
+    piece->set_position(end);
+    board.at(start.row).at(start.col) = nullptr;
+    board.at(end.row).at(end.col) = piece;
 }
 
 template <typename T, size_t N>
@@ -93,10 +91,25 @@ void Board::print_pieces()
     print_piece_array(knights);
 }
 
-bool Board::move_piece(const Position &start, const Position &end)
+void Board::move_piece(const Position &start, const Position &end)
 {
-    // TODO
-    return true;
+    if (Piece *piece = get_piece(start))
+    {
+        // TODO implement
+        if (piece->can_move(start, end))
+        {
+            // TODO check if end is valid, if no piece blocks the way
+            move_piece_pos_in_array(piece, start, end);
+        }
+        else
+        {
+            std::cout << "Invalid move." << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "Invalid: No piece at the start position." << std::endl;
+    }
 }
 
 void Board::draw() const
@@ -137,7 +150,7 @@ void Board::draw() const
     std::cout << std::endl;
 }
 
-bool Board::is_position_on_board(Position &pos)
+bool Board::is_position_on_board(const Position &pos) const
 {
     if (pos.row >= 1 &&
         pos.row < BOARD_SIZE &&

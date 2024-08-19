@@ -3,13 +3,8 @@
 Rook::Rook()
     : Piece(Position(), PieceType::Rook) {}
 
-bool Rook::can_move(const Position &start, const Position &end, const Board &board) const
+bool Rook::can_move(const Position &start, const Position &end) const
 {
     // TODO
     return true;
-}
-
-void Rook::move(const Position &start, const Position &end, Board &board)
-{
-    // TODO
 }
