@@ -27,7 +27,7 @@ void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &p
 }
 
 template <typename T, size_t N>
-void Board::print_piece_array(std::array<T, N> &pieces)
+void Board::print_piece_array(const std::array<T, N> &pieces) const
 {
     for (auto &piece : pieces)
     {
@@ -210,7 +210,7 @@ void Board::move_piece(const Position &start, const Position &end)
               << end.row << ", " << end.col << ")" << std::endl;
 }
 
-void Board::print_pieces()
+void Board::print_active_pieces() const
 {
     std::cout << std::endl
               << "Pieces on the board:" << std::endl;

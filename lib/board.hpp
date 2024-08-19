@@ -31,7 +31,7 @@ private:
 
     // Template method to print the arrays of differnt pieces
     template <typename T, size_t N>
-    void print_piece_array(std::array<T, N> &pieces);
+    void print_piece_array(const std::array<T, N> &pieces) const;
 
     // Moves the desired piece from the start to the end position
     void move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end);
@@ -59,7 +59,7 @@ public:
     void move_piece(const Position &start, const Position &end);
 
     // Prints all the valid pieces on the board
-    void print_pieces();
+    void print_active_pieces() const;
 
     // Displays the current state of the board
     void draw() const;
