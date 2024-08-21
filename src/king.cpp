@@ -1,7 +1,7 @@
 #include "../lib/king.hpp"
 
 King::King()
-    : Piece(Position(), PieceType::King) {}
+    : Piece(Position(), PieceType::King, PieceColor::White) {}
 
 bool King::can_move(const Position &start, const Position &end) const
 {

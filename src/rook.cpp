@@ -1,7 +1,7 @@
 #include "../lib/rook.hpp"
 
 Rook::Rook()
-    : Piece(Position(), PieceType::Rook) {}
+    : Piece(Position(), PieceType::Rook, PieceColor::White) {}
 
 bool Rook::can_move(const Position &start, const Position &end) const
 {

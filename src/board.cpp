@@ -11,17 +11,18 @@ Board::Board()
 }
 
 template <typename T, size_t N>
-void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const Position &pos)
+void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const PieceColor piece_color, const Position &pos)
 {
     for (auto &piece : pieces)
     {
         // Object is not in the game
         if (piece.get_position().col == -1)
         {
-            std::cout << "Set " << piece.get_piece_type()
-                      << "(" << pos.row << ", " << pos.col << ")" << std::endl;
             piece.set_position(pos);
+            piece.set_piece_color(piece_color);
             board.at(pos.row).at(pos.col) = &piece;
+            std::cout << "Set " << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color())
+                      << "(" << pos.row << ", " << pos.col << ")" << std::endl;
             break;
         }
     }
@@ -35,7 +36,7 @@ void Board::print_piece_array(const std::array<T, N> &pieces) const
         // Do not print default pieces with position (-1, -1)
         if (piece.get_position().row != -1)
         {
-            std::cout << piece.get_piece_type() << "(" << piece.get_position().row << ", " << piece.get_position().col << ")" << std::endl;
+            std::cout << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color()) << "(" << piece.get_position().row << ", " << piece.get_position().col << ")" << std::endl;
         }
     }
 }
@@ -64,42 +65,75 @@ bool Board::is_position_on_board(const Position &pos) const
     return false;
 }
 
-bool Board::is_max_piece_type_reached(const char piece_type, const int count, const int max) const
+bool Board::is_max_piece_type_reached(const PieceType piece_type, const PieceColor piece_color, const int count, const int max) const
 {
     if (count >= max)
     {
-        std::cout << "Maximum number of " << piece_type << " reached." << std::endl;
-        return true;
+        std::cout << "Invalid: Maximum number of ";
+        switch (static_cast<char>(piece_color))
+        {
+        case static_cast<char>(PieceColor::White):
+            std::cout << "white " << get_piece_unicode(piece_type, PieceColor::White) << " reached." << std::endl;
+            return true;
+        case static_cast<char>(PieceColor::Black):
+            std::cout << "black " << get_piece_unicode(piece_type, PieceColor::White) << " reached." << std::endl;
+            return true;
+        }
     }
     return false;
 }
 
-std::string Board::get_piece_unicode(const char piece_type) const
+std::string Board::get_piece_unicode(const PieceType piece_type, const PieceColor piece_color) const
 {
-    switch (piece_type)
+    switch (static_cast<char>(piece_color))
     {
-    case 'P':
-        return "\u2659";
-    case 'N':
-        return "\u2658";
-    case 'B':
-        return "\u2657";
-    case 'R':
-        return "\u2656";
-    case 'Q':
-        return "\u2655";
-    case 'K':
-        return "\u2654";
+    case static_cast<char>(PieceColor::White):
+        switch (static_cast<char>(piece_type))
+        {
+        case static_cast<char>(PieceType::Pawn):
+            return "\u2659";
+        case static_cast<char>(PieceType::Knight):
+            return "\u2658";
+        case static_cast<char>(PieceType::Bishop):
+            return "\u2657";
+        case static_cast<char>(PieceType::Rook):
+            return "\u2656";
+        case static_cast<char>(PieceType::Queen):
+            return "\u2655";
+        case static_cast<char>(PieceType::King):
+            return "\u2654";
+        default:
+            return "?";
+        }
+    case static_cast<char>(PieceColor::Black):
+        switch (static_cast<char>(piece_type))
+        {
+        case static_cast<char>(PieceType::Pawn):
+            return "\u265F";
+        case static_cast<char>(PieceType::Knight):
+            return "\u265E";
+        case static_cast<char>(PieceType::Bishop):
+            return "\u265D";
+        case static_cast<char>(PieceType::Rook):
+            return "\u265C";
+        case static_cast<char>(PieceType::Queen):
+            return "\u265B";
+        case static_cast<char>(PieceType::King):
+            return "\u265A";
+        default:
+            return "?";
+        }
     default:
         return "?";
     }
 }
 
-void Board::spawn_piece(char piece_type, Position pos)
+void Board::spawn_piece(const PieceType piece_type, const PieceColor piece_color, Position pos)
 {
     // Check if the position is valid
     if (!is_position_on_board(pos))
     {
+        std::cout << "Invalid: Spawn position is out of bounds." << std::endl;
         return;
     }
 
@@ -111,52 +145,110 @@ void Board::spawn_piece(char piece_type, Position pos)
         return;
     }
 
-    switch (piece_type)
+    // Check if the maximum amount of allowed pieces are in the game for the specified type and color
+    switch (static_cast<char>(piece_color))
     {
-    case 'P':
-        if (!is_max_piece_type_reached(piece_type, pawn_count, MAX_PIECES_PAWN))
+    case static_cast<char>(PieceColor::White):
+        switch (static_cast<char>(piece_type))
         {
-            spawn_piece_pos_in_array(pawns, pos);
-            ++pawn_count;
+        case static_cast<char>(PieceType::Pawn):
+            if (!is_max_piece_type_reached(piece_type, piece_color, pawn_w_count, MAX_PIECES_PAWN))
+            {
+                spawn_piece_pos_in_array(pawns_w, PieceColor::White, pos);
+                ++pawn_w_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Knight):
+            if (!is_max_piece_type_reached(piece_type, piece_color, knight_w_count, MAX_PIECES_KNIGHT))
+            {
+                spawn_piece_pos_in_array(knights_w, PieceColor::White, pos);
+                ++knight_w_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Bishop):
+            if (!is_max_piece_type_reached(piece_type, piece_color, bishop_w_count, MAX_PIECES_BISHOP))
+            {
+                spawn_piece_pos_in_array(bishops_w, PieceColor::White, pos);
+                ++bishop_w_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Rook):
+            if (!is_max_piece_type_reached(piece_type, piece_color, rook_w_count, MAX_PIECES_ROOK))
+            {
+                spawn_piece_pos_in_array(rooks_w, PieceColor::White, pos);
+                ++rook_w_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Queen):
+            if (!is_max_piece_type_reached(piece_type, piece_color, queen_w_count, MAX_PIECES_QUEEN))
+            {
+                spawn_piece_pos_in_array(queens_w, PieceColor::White, pos);
+                ++queen_w_count;
+            }
+            return;
+        case static_cast<char>(PieceType::King):
+            if (!is_max_piece_type_reached(piece_type, piece_color, king_w_count, MAX_PIECES_KING))
+            {
+                spawn_piece_pos_in_array(kings_w, PieceColor::White, pos);
+                ++king_w_count;
+            }
+            return;
+        default:
+            std::cout << "Invalid piece type." << std::endl;
+            return;
         }
-        break;
-    case 'N':
-        if (!is_max_piece_type_reached(piece_type, knight_count, MAX_PIECES_KNIGHT))
+    case static_cast<char>(PieceColor::Black):
+        switch (static_cast<char>(piece_type))
         {
-            spawn_piece_pos_in_array(knights, pos);
-            ++knight_count;
+        case static_cast<char>(PieceType::Pawn):
+            if (!is_max_piece_type_reached(piece_type, piece_color, pawn_b_count, MAX_PIECES_PAWN))
+            {
+                spawn_piece_pos_in_array(pawns_b, PieceColor::Black, pos);
+                ++pawn_b_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Knight):
+            if (!is_max_piece_type_reached(piece_type, piece_color, knight_b_count, MAX_PIECES_KNIGHT))
+            {
+                spawn_piece_pos_in_array(knights_b, PieceColor::Black, pos);
+                ++knight_b_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Bishop):
+            if (!is_max_piece_type_reached(piece_type, piece_color, bishop_b_count, MAX_PIECES_BISHOP))
+            {
+                spawn_piece_pos_in_array(bishops_b, PieceColor::Black, pos);
+                ++bishop_b_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Rook):
+            if (!is_max_piece_type_reached(piece_type, piece_color, rook_b_count, MAX_PIECES_ROOK))
+            {
+                spawn_piece_pos_in_array(rooks_b, PieceColor::Black, pos);
+                ++rook_b_count;
+            }
+            return;
+        case static_cast<char>(PieceType::Queen):
+            if (!is_max_piece_type_reached(piece_type, piece_color, queen_b_count, MAX_PIECES_QUEEN))
+            {
+                spawn_piece_pos_in_array(queens_b, PieceColor::Black, pos);
+                ++queen_b_count;
+            }
+            return;
+        case static_cast<char>(PieceType::King):
+            if (!is_max_piece_type_reached(piece_type, piece_color, king_b_count, MAX_PIECES_KING))
+            {
+                spawn_piece_pos_in_array(kings_b, PieceColor::Black, pos);
+                ++king_b_count;
+            }
+            return;
+        default:
+            std::cout << "Invalid piece type." << std::endl;
+            return;
         }
-        break;
-    case 'B':
-        if (!is_max_piece_type_reached(piece_type, bishop_count, MAX_PIECES_BISHOP))
-        {
-            spawn_piece_pos_in_array(bishops, pos);
-            ++bishop_count;
-        }
-        break;
-    case 'R':
-        if (!is_max_piece_type_reached(piece_type, rook_count, MAX_PIECES_ROOK))
-        {
-            spawn_piece_pos_in_array(rooks, pos);
-            ++rook_count;
-        }
-        break;
-    case 'Q':
-        if (!is_max_piece_type_reached(piece_type, queen_count, MAX_PIECES_QUEEN))
-        {
-            spawn_piece_pos_in_array(queens, pos);
-            ++queen_count;
-        }
-        break;
-    case 'K':
-        if (!is_max_piece_type_reached(piece_type, king_count, MAX_PIECES_KING))
-        {
-            spawn_piece_pos_in_array(kings, pos);
-            ++king_count;
-        }
-        break;
     default:
-        std::cout << "Invalid piece type." << std::endl;
+        std::cout << "Invalid piece color." << std::endl;
+        return;
     }
 }
 
@@ -198,7 +290,7 @@ void Board::move_piece(const Position &start, const Position &end)
     // Check if the move is valid according to the piece's movement rules
     if (!piece->can_move(start, end))
     {
-        std::cout << "Invalid: Move not possible for " << piece->get_piece_type() << "." << std::endl;
+        std::cout << "Invalid: Move not possible for " << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color()) << " ." << std::endl;
         return;
     }
 
@@ -248,7 +340,7 @@ void Board::move_piece(const Position &start, const Position &end)
 
     // Perform the move
     move_piece_pos_in_array(piece, start, end);
-    std::cout << piece->get_piece_type()
+    std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
               << " moved: (" << start.row << ", " << start.col << ") -> ("
               << end.row << ", " << end.col << ")" << std::endl;
 }
@@ -256,10 +348,21 @@ void Board::move_piece(const Position &start, const Position &end)
 void Board::print_active_pieces() const
 {
     std::cout << std::endl
-              << "Pieces on the board:" << std::endl;
-    print_piece_array(bishops);
-    print_piece_array(rooks);
-    print_piece_array(knights);
+              << "White pieces on the board:" << std::endl;
+    print_piece_array(pawns_w);
+    print_piece_array(bishops_w);
+    print_piece_array(knights_w);
+    print_piece_array(rooks_w);
+    print_piece_array(queens_w);
+    print_piece_array(kings_w);
+    std::cout << std::endl
+              << "Black pieces on the board:" << std::endl;
+    print_piece_array(pawns_b);
+    print_piece_array(bishops_b);
+    print_piece_array(knights_b);
+    print_piece_array(rooks_b);
+    print_piece_array(queens_b);
+    print_piece_array(kings_b);
 }
 
 void Board::draw() const
@@ -288,7 +391,7 @@ void Board::draw() const
             }
             else
             {
-                std::string pieceUnicode = get_piece_unicode(piece->get_piece_type());
+                std::string pieceUnicode = get_piece_unicode(piece->get_piece_type(), piece->get_piece_color());
                 std::cout << " " << pieceUnicode << " ";
             }
         }

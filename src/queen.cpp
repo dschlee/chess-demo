@@ -1,7 +1,7 @@
 #include "../lib/queen.hpp"
 
 Queen::Queen()
-    : Piece(Position(), PieceType::Queen) {}
+    : Piece(Position(), PieceType::Queen, PieceColor::White) {}
 
 bool Queen::can_move(const Position &start, const Position &end) const
 {

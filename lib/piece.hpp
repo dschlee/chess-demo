@@ -22,16 +22,24 @@ enum class PieceType
     King = 'K'
 };
 
+// Enum representing different piece colors
+enum class PieceColor
+{
+    White = 'w',
+    Black = 'b'
+};
+
 // Abstract base class for a chess piece
 class Piece
 {
 protected:
     Position pos_;
     PieceType piece_type_;
+    PieceColor piece_color_;
 
 public:
     // Constructor
-    Piece(const Position &pos, PieceType piece_type);
+    Piece(const Position &pos, PieceType piece_type, PieceColor piece_color_);
 
     // Virtual destructor
     virtual ~Piece() = default;
@@ -42,9 +50,15 @@ public:
     // Sets the position of the piece
     void set_position(const Position &pos);
 
+    // Sets the color of the piece
+    void set_piece_color(const PieceColor piece_color);
+
     // Gets the current position of the piece
     Position get_position() const;
 
     // Gets the abbreviation of the piece type
-    char get_piece_type() const;
+    PieceType get_piece_type() const;
+
+    // Gets the abbrevation of the piece color
+    PieceColor get_piece_color() const;
 };

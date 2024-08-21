@@ -1,7 +1,7 @@
 #include "../lib/bishop.hpp"
 
 Bishop::Bishop()
-    : Piece(Position(), PieceType::Bishop) {}
+    : Piece(Position(), PieceType::Bishop, PieceColor::White) {}
 
 bool Bishop::can_move(const Position &start, const Position &end) const
 {

@@ -1,7 +1,7 @@
 #include "../lib/knight.hpp"
 
 Knight::Knight()
-    : Piece(Position(), PieceType::Knight) {}
+    : Piece(Position(), PieceType::Knight, PieceColor::White) {}
 
 bool Knight::can_move(const Position &start, const Position &end) const
 {
