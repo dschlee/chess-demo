@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "../lib/board.hpp"
 
 Board::Board()
@@ -71,6 +72,21 @@ bool Board::is_max_piece_type_reached(const char piece_type, const int count, co
         return true;
     }
     return false;
+}
+
+std::string Board::get_piece_unicode(const char piece_type) const
+{
+    switch (piece_type)
+    {
+    case 'B':
+        return "\u2657";
+    case 'K':
+        return "\u2658";
+    case 'R':
+        return "\u2656";
+    default:
+        return "?";
+    }
 }
 
 void Board::spawn_piece(char piece_type, Position pos)
@@ -221,38 +237,45 @@ void Board::print_active_pieces() const
 
 void Board::draw() const
 {
-    std::cout << std::endl;
-    int row = 8;
-    // char col = 'a';
-    int col = 1;
-    for (int i = BOARD_SIZE - 1; i >= 0; --i)
-    {
-        for (int j = 0; j < BOARD_SIZE; ++j)
-        {
-            // std::cout << i << j << ", ";
+    const std::string horizontal_line = "   +---+---+---+---+---+---+---+---+";
 
-            if (i == 0 && j == 0)
+    std::cout << std::endl
+              << std::endl;
+
+    for (int i = BOARD_SIZE - 1; i >= 1; --i)
+    {
+        std::cout << horizontal_line << std::endl;
+
+        // Print row number
+        std::cout << " " << i << " ";
+
+        for (int j = 1; j < BOARD_SIZE; ++j)
+        {
+            Piece *piece = board.at(j).at(i);
+
+            std::cout << "|";
+
+            if (piece == nullptr)
             {
-                std::cout << "  ";
-            }
-            else if (i == 0)
-            {
-                std::cout << col++ << ' ';
-            }
-            else if (j == 0)
-            {
-                std::cout << row-- << ' ';
-            }
-            else if (board.at(j).at(i) == nullptr)
-            {
-                std::cout << ". ";
+                std::cout << "   ";
             }
             else
             {
-                std::cout << board.at(j).at(i)->get_piece_type() << ' ';
+                std::string pieceUnicode = get_piece_unicode(piece->get_piece_type());
+                std::cout << " " << pieceUnicode << " ";
             }
         }
-        std::cout << std::endl;
+        std::cout << "|" << std::endl;
     }
-    std::cout << std::endl;
+
+    std::cout << horizontal_line << std::endl;
+
+    // Print column labels at the bottom
+    std::cout << "   ";
+    for (int col = 1; col < BOARD_SIZE; ++col)
+    {
+        std::cout << "  " << col << " ";
+    }
+    std::cout << std::endl
+              << std::endl;
 }

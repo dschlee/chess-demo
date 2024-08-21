@@ -45,6 +45,9 @@ private:
     // Checks if maximum amount of piece types are on the board
     bool is_max_piece_type_reached(const char piece_type, const int count, const int max) const;
 
+    // Get the unicode characters of the selected piece
+    std::string get_piece_unicode(const char piece_type) const;
+
 public:
     // Constructor initializes the board with nullptrs
     Board();
