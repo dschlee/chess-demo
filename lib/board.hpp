@@ -1,24 +1,37 @@
 #pragma once
 #include <array>
-#include "../lib/bishop.hpp"
+#include "../lib/pawn.hpp"
+#include "../lib/pawn.hpp"
 #include "../lib/knight.hpp"
+#include "../lib/bishop.hpp"
 #include "../lib/rook.hpp"
+#include "../lib/queen.hpp"
+#include "../lib/king.hpp"
 
 const int BOARD_SIZE = 9;
-const int MAX_PIECES_BISHOP = 4;
+const int MAX_PIECES_PAWN = 16;
 const int MAX_PIECES_KNIGHT = 4;
+const int MAX_PIECES_BISHOP = 4;
 const int MAX_PIECES_ROOK = 4;
+const int MAX_PIECES_QUEEN = 2;
+const int MAX_PIECES_KING = 2;
 
 class Board
 {
 private:
     std::array<std::array<Piece *, BOARD_SIZE>, BOARD_SIZE> board{};
-    std::array<Bishop, MAX_PIECES_ROOK> bishops;
+    std::array<Pawn, MAX_PIECES_PAWN> pawns;
     std::array<Knight, MAX_PIECES_KNIGHT> knights;
+    std::array<Bishop, MAX_PIECES_ROOK> bishops;
     std::array<Rook, MAX_PIECES_ROOK> rooks;
-    int bishop_count = 0;
+    std::array<Queen, MAX_PIECES_QUEEN> queens;
+    std::array<King, MAX_PIECES_KING> kings;
+    int pawn_count = 0;
     int knight_count = 0;
+    int bishop_count = 0;
     int rook_count = 0;
+    int queen_count = 0;
+    int king_count = 0;
 
     /**
      * Template method to set the position of a piece in the provided array.

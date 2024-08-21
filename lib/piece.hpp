@@ -14,9 +14,12 @@ struct Position
 // Enum representing different types of pieces
 enum class PieceType
 {
+    Pawn = 'P',
+    Knight = 'N',
     Bishop = 'B',
-    Knight = 'K',
-    Rook = 'R'
+    Rook = 'R',
+    Queen = 'Q',
+    King = 'K'
 };
 
 // Abstract base class for a chess piece

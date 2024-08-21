@@ -78,12 +78,18 @@ std::string Board::get_piece_unicode(const char piece_type) const
 {
     switch (piece_type)
     {
+    case 'P':
+        return "\u2659";
+    case 'N':
+        return "\u2658";
     case 'B':
         return "\u2657";
-    case 'K':
-        return "\u2658";
     case 'R':
         return "\u2656";
+    case 'Q':
+        return "\u2655";
+    case 'K':
+        return "\u2654";
     default:
         return "?";
     }
@@ -107,6 +113,20 @@ void Board::spawn_piece(char piece_type, Position pos)
 
     switch (piece_type)
     {
+    case 'P':
+        if (!is_max_piece_type_reached(piece_type, pawn_count, MAX_PIECES_PAWN))
+        {
+            spawn_piece_pos_in_array(pawns, pos);
+            ++pawn_count;
+        }
+        break;
+    case 'N':
+        if (!is_max_piece_type_reached(piece_type, knight_count, MAX_PIECES_KNIGHT))
+        {
+            spawn_piece_pos_in_array(knights, pos);
+            ++knight_count;
+        }
+        break;
     case 'B':
         if (!is_max_piece_type_reached(piece_type, bishop_count, MAX_PIECES_BISHOP))
         {
@@ -114,18 +134,25 @@ void Board::spawn_piece(char piece_type, Position pos)
             ++bishop_count;
         }
         break;
-    case 'K':
-        if (!is_max_piece_type_reached(piece_type, knight_count, MAX_PIECES_KNIGHT))
-        {
-            spawn_piece_pos_in_array(knights, pos);
-            ++knight_count;
-        }
-        break;
     case 'R':
         if (!is_max_piece_type_reached(piece_type, rook_count, MAX_PIECES_ROOK))
         {
             spawn_piece_pos_in_array(rooks, pos);
             ++rook_count;
+        }
+        break;
+    case 'Q':
+        if (!is_max_piece_type_reached(piece_type, queen_count, MAX_PIECES_QUEEN))
+        {
+            spawn_piece_pos_in_array(queens, pos);
+            ++queen_count;
+        }
+        break;
+    case 'K':
+        if (!is_max_piece_type_reached(piece_type, king_count, MAX_PIECES_KING))
+        {
+            spawn_piece_pos_in_array(kings, pos);
+            ++king_count;
         }
         break;
     default:

@@ -4,9 +4,12 @@
 #include <limits>
 #include "../lib/board.hpp"
 #include "../lib/piece.hpp"
-#include "../lib/bishop.hpp"
+#include "../lib/pawn.hpp"
 #include "../lib/knight.hpp"
+#include "../lib/bishop.hpp"
 #include "../lib/rook.hpp"
+#include "../lib/queen.hpp"
+#include "../lib/king.hpp"
 
 void show_menu()
 {
@@ -23,7 +26,7 @@ void spawn_piece_menu(Board &board)
     std::string position_input;
     int row = -1, col = -1;
 
-    std::cout << "Select piece to spawn <B: Bishop, K: Knight, R: Rook>: ";
+    std::cout << "Select piece to spawn <P: Pawn, N: Knight, B: Bishop, R: Rook, Q: Queen, K: King>: ";
     std::cin >> piece_type;
 
     // Clear the newline left in the input buffer
