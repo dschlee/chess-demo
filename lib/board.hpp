@@ -61,6 +61,9 @@ private:
     // Moves the desired piece from the start to the end position
     void move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end);
 
+    // Remove piece from the board
+    void remove_piece_pos_in_array(Piece *piece);
+
     // Gets the piece at a given position
     Piece *get_piece(const Position &pos) const;
 
