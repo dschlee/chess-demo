@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <iostream>
 
 // Struct representing the position of pieces on the board
 struct Position
@@ -45,7 +46,10 @@ public:
     virtual ~Piece() = default;
 
     // Pure virtual function to check if a move is valid
-    virtual bool can_move(const Position &start, const Position &end) const = 0;
+    virtual bool can_move(const Position &start, const Position &end, const Piece *end_piece) const = 0;
+
+    // Virtual function to check if the piece can capture another piece during a move
+    virtual bool can_capture(const Piece *end_piece) const;
 
     // Sets the position of the piece
     void set_position(const Position &pos);

@@ -341,7 +341,7 @@ void Board::move_piece(const Position &start, const Position &end)
     }
 
     // Check if the move is valid according to the piece's movement rules
-    if (!piece->can_move(start, end))
+    if (!piece->can_move(start, end, end_piece))
     {
         std::cout << "Invalid: Move not possible for " << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color()) << " ." << std::endl;
         return;
@@ -394,15 +394,14 @@ void Board::move_piece(const Position &start, const Position &end)
     // Capture piece of other color at end position if applicable
     if (end_piece)
     {
-        // Both pieces are of the same color
-        if (piece->get_piece_color() == end_piece->get_piece_color())
+        if (!piece->can_capture(end_piece))
         {
             std::cout << "Invalid: End position is occupied." << std::endl;
             return;
         }
-        // Capture opponent piece
         else
         {
+            // Capture opponent piece
             remove_piece_pos_in_array(end_piece);
         }
     }

@@ -97,116 +97,134 @@ void move_piece_menu(Board &board)
 /**
  * Main function that allows interaction with the menu
  */
-int main()
-{
-    Board board;
-    board.draw();
-
-    int choice;
-    do
-    {
-        show_menu();
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
-
-        // Catch the case where the input is not an integer
-        while (std::cin.fail())
-        {
-            std::cin.clear();                                                   // clear the error flag on cin
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard the input
-            std::cout << "Invalid input, please enter a number.";
-            board.draw();
-            show_menu();
-            std::cout << "Enter your choice: ";
-            std::cin >> choice;
-        }
-
-        switch (choice)
-        {
-        case 1:
-            spawn_piece_menu(board);
-            break;
-        case 2:
-            move_piece_menu(board);
-            break;
-        case 3:
-            board.print_active_pieces();
-            break;
-        case 0:
-            std::cout << "Quitting the game..." << std::endl;
-            break;
-        default:
-            std::cout << "Invalid choice, please try again." << std::endl;
-            break;
-        }
-
-        if (choice != 0)
-        {
-            board.draw();
-        }
-
-    } while (choice != 0);
-
-    return 0;
-}
-
-/**
- * Main function with a hardcoded test case
- */
 // int main()
 // {
 //     Board board;
 //     board.draw();
 
-//     // board.spawn_piece('N', 'b', Position(1, 1));
-//     board.spawn_piece(PieceType::Knight, PieceColor::Black, Position(1, 1));
-//     board.move_piece(Position(1, 1), Position(1, 5));
-//     // board.spawn_piece('N', 'b', Position(1, 2));
-//     // board.spawn_piece('N', 'b', Position(1, 3));
-//     // board.spawn_piece('N', 'w', Position(2, 1));
-//     // board.spawn_piece('N', 'w', Position(2, 2));
-//     // board.spawn_piece('N', 'w', Position(2, 3));
-//     // board.spawn_piece('Q', 'w', Position(1, 2));
-//     // board.spawn_piece('B', 'b', Position(1, 2));
-//     board.print_active_pieces();
-//     board.draw();
+//     int choice;
+//     do
+//     {
+//         show_menu();
+//         std::cout << "Enter your choice: ";
+//         std::cin >> choice;
 
-//     // board.spawn_piece('R', 'b', Position(2, 1));
-//     // board.spawn_piece('R', 'b', Position(2, 1));
-//     // board.spawn_piece('R', 'b', Position(2, 2));
-//     // // board.spawn_piece('B', 'b', Position(1, 2));
-//     // board.print_active_pieces();
-//     // board.draw();
+//         // Catch the case where the input is not an integer
+//         while (std::cin.fail())
+//         {
+//             std::cin.clear();                                                   // clear the error flag on cin
+//             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard the input
+//             std::cout << "Invalid input, please enter a number.";
+//             board.draw();
+//             show_menu();
+//             std::cout << "Enter your choice: ";
+//             std::cin >> choice;
+//         }
 
-//     // board.move_piece(Position(1, 1), Position(1, 5));
-//     // board.draw();
+//         switch (choice)
+//         {
+//         case 1:
+//             spawn_piece_menu(board);
+//             break;
+//         case 2:
+//             move_piece_menu(board);
+//             break;
+//         case 3:
+//             board.print_active_pieces();
+//             break;
+//         case 0:
+//             std::cout << "Quitting the game..." << std::endl;
+//             break;
+//         default:
+//             std::cout << "Invalid choice, please try again." << std::endl;
+//             break;
+//         }
 
-//     // board.move_piece(Position(1, 1), Position(5, 1));
-//     // board.draw();
+//         if (choice != 0)
+//         {
+//             board.draw();
+//         }
 
-//     // board.move_piece(Position(1, 1), Position(3, 1));
-//     // board.draw();
+//     } while (choice != 0);
 
-//     // board.move_piece(Position(5, 1), Position(2, 3));
-//     // board.draw();
-
-//     // board.move_piece(Position(5, 1), Position(5, 6));
-//     // board.draw();
-
-//     // board.move_piece(Position(1, 2), Position(1, 1));
-//     // board.draw();
-
-//     // board.move_piece(Position(1, 2), Position(2, 3));
-//     // board.draw();
-
-//     // board.move_piece(Position(2, 3), Position(5, 6));
-//     // board.draw();
-
-//     // board.move_piece(Position(2, 3), Position(-1, 0));
-//     // board.draw();
-
-//     // board.print_active_pieces();
-
-//     std::cout << std::endl;
 //     return 0;
 // }
+
+/**
+ * Main function with a hardcoded test case
+ */
+int main()
+{
+    Board board;
+    board.draw();
+
+    board.spawn_piece(PieceType::Pawn, PieceColor::White, Position(1, 1));
+    // board.spawn_piece(PieceType::Pawn, PieceColor::White, Position(2, 2));
+    // board.spawn_piece(PieceType::Pawn, PieceColor::White, Position(5, 1));
+    // board.spawn_piece(PieceType::Pawn, PieceColor::Black, Position(6, 2));
+    board.print_active_pieces();
+    board.draw();
+
+    // Position(col, row)
+    board.move_piece(Position(1, 1), Position(1, 2));
+    board.draw();
+    board.print_active_pieces();
+
+    // board.move_piece(Position(5, 1), Position(6, 2));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(5, 1), Position(6, 2));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(6, 2), Position(7, 3));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(6, 2), Position(8, 2));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(6, 4), Position(6, 6));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(6, 4), Position(6, 5));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(1, 2), Position(2, 2));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(2, 1), Position(2, 2));
+    // board.draw();
+    // board.print_active_pieces();
+
+    // board.move_piece(Position(1, 1), Position(3, 1));
+    // board.draw();
+
+    // board.move_piece(Position(5, 1), Position(2, 3));
+    // board.draw();
+
+    // board.move_piece(Position(5, 1), Position(5, 6));
+    // board.draw();
+
+    // board.move_piece(Position(1, 2), Position(1, 1));
+    // board.draw();
+
+    // board.move_piece(Position(1, 2), Position(2, 3));
+    // board.draw();
+
+    // board.move_piece(Position(2, 3), Position(5, 6));
+    // board.draw();
+
+    // board.move_piece(Position(2, 3), Position(-1, 0));
+    // board.draw();
+
+    // board.print_active_pieces();
+
+    std::cout << std::endl;
+    return 0;
+}

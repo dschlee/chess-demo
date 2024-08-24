@@ -3,6 +3,16 @@
 Piece::Piece(const Position &pos, PieceType piece_type, PieceColor piece_color)
     : pos_(pos), piece_type_(piece_type), piece_color_(piece_color) {}
 
+bool Piece::can_capture(const Piece *end_piece) const
+{
+    if (piece_color_ == end_piece->get_piece_color())
+    {
+        std::cout << "Invalid: End position is occupied." << std::endl;
+        return false;
+    }
+    return true;
+}
+
 void Piece::set_position(const Position &pos)
 {
     pos_ = pos;
