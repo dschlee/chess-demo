@@ -45,7 +45,7 @@ bool Pawn::can_move(const Position &start, const Position &end, const Piece *end
             return true;
         }
         // Move diagonally only to capture an opponent piece
-        else if (row_diff == -1 && col_diff == 1)
+        else if (row_diff == -1 && col_diff == 1 && end_piece)
         {
             return true;
         }

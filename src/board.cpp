@@ -4,9 +4,9 @@
 
 Board::Board()
 {
-    for (auto &row : board)
+    for (auto &col : board)
     {
-        row.fill(nullptr);
+        col.fill(nullptr);
     }
 }
 
@@ -20,9 +20,9 @@ void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const PieceColor 
         {
             piece.set_position(pos);
             piece.set_piece_color(piece_color);
-            board.at(pos.row).at(pos.col) = &piece;
+            board.at(pos.col).at(pos.row) = &piece;
             std::cout << "Set " << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color())
-                      << " (" << pos.row << ", " << pos.col << ")" << std::endl;
+                      << " (" << pos.col << ", " << pos.row << ")" << std::endl;
             break;
         }
     }
@@ -34,9 +34,10 @@ void Board::print_piece_array(const std::array<T, N> &pieces) const
     for (auto &piece : pieces)
     {
         // Do not print default pieces with position (-1, -1)
-        if (piece.get_position().row != -1)
+        if (piece.get_position().col != -1)
         {
-            std::cout << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color()) << " (" << piece.get_position().row << ", " << piece.get_position().col << ")" << std::endl;
+            std::cout << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color())
+                      << " (" << piece.get_position().col << ", " << piece.get_position().row << ")" << std::endl;
         }
     }
 }
@@ -44,19 +45,19 @@ void Board::print_piece_array(const std::array<T, N> &pieces) const
 void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end)
 {
     std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
-              << " moved: (" << start.row << ", " << start.col << ") -> ("
-              << end.row << ", " << end.col << ")" << std::endl;
+              << " moved: (" << start.col << ", " << start.row << ") -> ("
+              << end.col << ", " << end.row << ")" << std::endl;
     piece->set_position(end);
-    board.at(start.row).at(start.col) = nullptr;
-    board.at(end.row).at(end.col) = piece;
+    board.at(start.col).at(start.row) = nullptr;
+    board.at(end.col).at(end.row) = piece;
 }
 
 void Board::remove_piece_pos_in_array(Piece *piece)
 {
     Position piece_pos = piece->get_position();
     std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
-              << " (" << piece_pos.row << ", " << piece_pos.col << ") captured." << std::endl;
-    board.at(piece_pos.row).at(piece_pos.col);
+              << " (" << piece_pos.col << ", " << piece_pos.row << ") captured." << std::endl;
+    board.at(piece_pos.col).at(piece_pos.row);
     piece->set_position(Position(-1, -1));
 
     switch (static_cast<char>(piece->get_piece_color()))
@@ -110,15 +111,15 @@ void Board::remove_piece_pos_in_array(Piece *piece)
 
 Piece *Board::get_piece(const Position &pos) const
 {
-    return board.at(pos.row).at(pos.col);
+    return board.at(pos.col).at(pos.row);
 }
 
 bool Board::is_position_on_board(const Position &pos) const
 {
-    if (pos.row >= 1 &&
-        pos.row < BOARD_SIZE &&
-        pos.col >= 1 &&
-        pos.col < BOARD_SIZE)
+    if (pos.col >= 1 &&
+        pos.col < BOARD_SIZE &&
+        pos.row >= 1 &&
+        pos.row < BOARD_SIZE)
     {
         return true;
     }
@@ -314,8 +315,8 @@ void Board::spawn_piece(const PieceType piece_type, const PieceColor piece_color
 
 void Board::move_piece(const Position &start, const Position &end)
 {
-    std::cout << "Command: (" << start.row << ", " << start.col << ") -> ("
-              << end.row << ", " << end.col << ")" << std::endl;
+    std::cout << "Command: (" << start.col << ", " << start.row << ") -> ("
+              << end.col << ", " << end.row << ")" << std::endl;
 
     // Ensure the start and end positions are valid
     if (!is_position_on_board(start))
@@ -353,7 +354,7 @@ void Board::move_piece(const Position &start, const Position &end)
         int step = (end.col > start.col) ? 1 : -1;
         for (int col = start.col + step; col != end.col; col += step)
         {
-            if (board.at(start.row).at(col) != nullptr)
+            if (board.at(col).at(start.row) != nullptr)
             {
                 std::cout << "Invalid: Path blocked." << std::endl;
                 return;
@@ -365,7 +366,7 @@ void Board::move_piece(const Position &start, const Position &end)
         int step = (end.row > start.row) ? 1 : -1;
         for (int row = start.row + step; row != end.row; row += step)
         {
-            if (board.at(row).at(start.col) != nullptr)
+            if (board.at(start.col).at(row) != nullptr)
             {
                 std::cout << "Invalid: Path blocked." << std::endl;
                 return;
@@ -374,20 +375,20 @@ void Board::move_piece(const Position &start, const Position &end)
     }
     else if (abs(end.row - start.row) == abs(end.col - start.col)) // Diagonal move
     {
-        int row_step = (end.row > start.row) ? 1 : -1;
         int col_step = (end.col > start.col) ? 1 : -1;
-        int row = start.row + row_step;
+        int row_step = (end.row > start.row) ? 1 : -1;
         int col = start.col + col_step;
+        int row = start.row + row_step;
 
         while (row != end.row && col != end.col)
         {
-            if (board.at(row).at(col) != nullptr)
+            if (board.at(col).at(row) != nullptr)
             {
                 std::cout << "Invalid: Path blocked." << std::endl;
                 return;
             }
-            row += row_step;
             col += col_step;
+            row += row_step;
         }
     }
 
@@ -428,6 +429,8 @@ void Board::print_active_pieces() const
     print_piece_array(rooks_b);
     print_piece_array(queens_b);
     print_piece_array(kings_b);
+
+    std::cout << std::endl;
 }
 
 void Board::draw() const

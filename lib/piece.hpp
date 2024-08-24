@@ -5,11 +5,11 @@
 // Struct representing the position of pieces on the board
 struct Position
 {
-    int row;
     int col;
+    int row;
 
-    Position(int r = -1, int c = -1)
-        : row(r), col(c) {}
+    Position(int c = -1, int r = -1)
+        : col(c), row(r) {}
 };
 
 // Enum representing different types of pieces
