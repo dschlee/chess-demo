@@ -14,10 +14,45 @@
 void show_menu()
 {
     std::cout << "Select an option:" << std::endl;
-    std::cout << "1. Spawn a piece" << std::endl;
-    std::cout << "2. Move a piece" << std::endl;
-    std::cout << "3. Print active pieces" << std::endl;
+    std::cout << "1. Move a piece" << std::endl;
+    std::cout << "2. Spawn a piece" << std::endl;
+    std::cout << "3. Remove a piece" << std::endl;
+    std::cout << "4. Print active pieces" << std::endl;
     std::cout << "0. Quit" << std::endl;
+}
+
+void move_piece_menu(Board &board)
+{
+    std::string start_input, end_input;
+
+    // Get and validate start position input
+    std::cout << "Enter start position in algebraic notation (e.g. a2) <column row>: ";
+    std::getline(std::cin >> std::ws, start_input); // std::ws discards leading whitespace
+
+    if (start_input.length() != 2 ||
+        start_input[0] < 'a' || start_input[0] > 'h' ||
+        start_input[1] < '1' || start_input[1] > '8')
+    {
+        std::cout << "Invalid input format: Please enter a valid chess position (column: a-h, row: 1-8)." << std::endl;
+        return;
+    }
+
+    // Get and validate end position input
+    std::cout << "Enter end position in algebraic notation (e.g. a4) <column row>: ";
+    std::getline(std::cin, end_input);
+
+    if (end_input.length() != 2 ||
+        end_input[0] < 'a' || end_input[0] > 'h' ||
+        end_input[1] < '1' || end_input[1] > '8')
+    {
+        std::cout << "Invalid input format: Please enter a valid chess position (column: a-h, row: 1-8)." << std::endl;
+        return;
+    }
+
+    Position start{start_input};
+    Position end{end_input};
+
+    board.move_piece(start, end);
 }
 
 void spawn_piece_menu(Board &board)
@@ -25,7 +60,6 @@ void spawn_piece_menu(Board &board)
     char piece_type;
     char piece_color;
     std::string position_input;
-    int col = -1, row = -1;
 
     std::cout << "Select piece to spawn <P: Pawn, N: Knight, B: Bishop, R: Rook, Q: Queen, K: King>: ";
     std::cin >> piece_type;
@@ -36,62 +70,89 @@ void spawn_piece_menu(Board &board)
     // Clear the newline left in the input buffer
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    std::cout << "Enter position <column, row>: ";
+    std::cout << "Enter position in algebraic notation (e.g. a2) <column row>: ";
     std::getline(std::cin, position_input);
 
-    // Parse the input string
-    std::istringstream iss(position_input);
-    char comma;
-
-    if (iss >> col >> comma >> row && comma == ',')
+    // Convert position from algebraic notation to numeric position
+    if (position_input.length() == 2 &&
+        position_input[0] >= 'a' && position_input[0] <= 'h' &&
+        position_input[1] >= '1' && position_input[1] <= '8')
     {
-        Position pos{col, row};
+        Position pos(position_input);
         board.spawn_piece(static_cast<PieceType>(toupper(piece_type)),
                           static_cast<PieceColor>(tolower(piece_color)),
                           pos);
     }
     else
     {
-        std::cout << "Invalid input format: Please enter two comma-seperated integers in the range 1-8 <column, row>." << std::endl;
+        std::cout << "Invalid input format: Please enter a valid chess position (column: a-h, row: 1-8)." << std::endl;
     }
 }
 
-void move_piece_menu(Board &board)
+void remove_piece_menu(Board &board)
 {
-    std::string start_input, end_input;
-    int start_col = -1, start_row = -1;
-    int end_col = -1, end_row = -1;
+    // TODO
+    std::cout << "TODO" << std::endl;
+}
 
-    // Get and validate start position input
-    std::cout << "Enter start position <column, row>: ";
-    std::getline(std::cin >> std::ws, start_input); // std::ws discards leading whitespace
+/**
+ * Main function that allows interaction with the menu
+ */
+int main()
+{
+    Board board;
+    board.draw();
 
-    std::istringstream start_stream(start_input);
-    char start_comma;
-
-    if (!(start_stream >> start_col >> start_comma >> start_row) || start_comma != ',')
+    int choice;
+    do
     {
-        std::cout << "Invalid input format: Please enter two comma-seperated integers in the range 1-8 <column, row>." << std::endl;
-        return;
-    }
+        show_menu();
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
 
-    // Get and validate end position input
-    std::cout << "Enter end position <column, row>: ";
-    std::getline(std::cin, end_input);
+        // Catch the case where the input is not an integer
+        while (std::cin.fail())
+        {
+            std::cin.clear();                                                   // clear the error flag on cin
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard the input
+            std::cout << "Invalid input, please enter a number.";
+            board.draw();
+            show_menu();
+            std::cout << "Enter your choice: ";
+            std::cin >> choice;
+        }
 
-    std::istringstream end_stream(end_input);
-    char end_comma;
+        switch (choice)
+        {
+        case 1:
+            move_piece_menu(board);
+            break;
+        case 2:
+            spawn_piece_menu(board);
+            break;
+        case 3:
+            remove_piece_menu(board);
+            break;
+        case 4:
+            board.print_active_pieces();
+            break;
+        case 0:
+            std::cout << "Quitting the game..." << std::endl
+                      << std::endl;
+            break;
+        default:
+            std::cout << "Invalid choice, please try again." << std::endl;
+            break;
+        }
 
-    if (!(end_stream >> end_col >> end_comma >> end_row) || end_comma != ',')
-    {
-        std::cout << "Invalid input format: Please enter two comma-seperated integers in the range 1-8 <column, row>." << std::endl;
-        return;
-    }
+        if (choice != 0)
+        {
+            board.draw();
+        }
 
-    Position start{start_col, start_row};
-    Position end{end_col, end_row};
+    } while (choice != 0);
 
-    board.move_piece(start, end);
+    return 0;
 }
 
 /**
@@ -99,106 +160,50 @@ void move_piece_menu(Board &board)
  */
 // int main()
 // {
-//     Board board;
-//     board.draw();
+// Board board;
+// board.draw();
 
-//     int choice;
-//     do
-//     {
-//         show_menu();
-//         std::cout << "Enter your choice: ";
-//         std::cin >> choice;
+// board.spawn_piece(PieceType::Rook, PieceColor::White, Position("c2"));
+// board.spawn_piece(PieceType::Bishop, PieceColor::Black, Position("b1"));
+// board.print_active_pieces();
+// board.draw();
 
-//         // Catch the case where the input is not an integer
-//         while (std::cin.fail())
-//         {
-//             std::cin.clear();                                                   // clear the error flag on cin
-//             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard the input
-//             std::cout << "Invalid input, please enter a number.";
-//             board.draw();
-//             show_menu();
-//             std::cout << "Enter your choice: ";
-//             std::cin >> choice;
-//         }
+// board.move_piece(Position("c2"), Position("j4"));
+// board.draw();
+// board.print_active_pieces();
 
-//         switch (choice)
-//         {
-//         case 1:
-//             spawn_piece_menu(board);
-//             break;
-//         case 2:
-//             move_piece_menu(board);
-//             break;
-//         case 3:
-//             board.print_active_pieces();
-//             break;
-//         case 0:
-//             std::cout << "Quitting the game..." << std::endl;
-//             break;
-//         default:
-//             std::cout << "Invalid choice, please try again." << std::endl;
-//             break;
-//         }
+// board.move_piece(Position("b1"), Position("c-1"));
+// board.draw();
+// board.print_active_pieces();
 
-//         if (choice != 0)
-//         {
-//             board.draw();
-//         }
+// board.move_piece(Position(1, 1), Position(3, 1));
+// board.draw();
+// board.print_active_pieces();
 
-//     } while (choice != 0);
+// board.move_piece(Position(5, 1), Position(2, 3));
+// board.draw();
+// board.print_active_pieces();
 
+// board.move_piece(Position(5, 1), Position(5, 6));
+// board.draw();
+// board.print_active_pieces();
+
+// board.move_piece(Position(1, 2), Position(1, 1));
+// board.draw();
+// board.print_active_pieces();
+
+// board.move_piece(Position(1, 2), Position(2, 3));
+// board.draw();
+// board.print_active_pieces();
+
+// board.move_piece(Position(2, 3), Position(5, 6));
+// board.draw();
+// board.print_active_pieces();
+
+// board.move_piece(Position(2, 3), Position(-1, 0));
+// board.draw();
+// board.print_active_pieces();
+
+//     std::cout << std::endl;
 //     return 0;
 // }
-
-/**
- * Main function with a hardcoded test case
- */
-int main()
-{
-    Board board;
-    board.draw();
-
-    board.spawn_piece(PieceType::Rook, PieceColor::White, Position(1, 1));
-    board.spawn_piece(PieceType::Bishop, PieceColor::Black, Position(1, 2));
-    board.print_active_pieces();
-    board.draw();
-
-    board.move_piece(Position(1, 1), Position(1, 5));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(1, 1), Position(5, 1));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(1, 1), Position(3, 1));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(5, 1), Position(2, 3));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(5, 1), Position(5, 6));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(1, 2), Position(1, 1));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(1, 2), Position(2, 3));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(2, 3), Position(5, 6));
-    board.draw();
-    board.print_active_pieces();
-
-    board.move_piece(Position(2, 3), Position(-1, 0));
-    board.draw();
-    board.print_active_pieces();
-
-    std::cout << std::endl;
-    return 0;
-}

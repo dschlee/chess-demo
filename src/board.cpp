@@ -22,7 +22,7 @@ void Board::spawn_piece_pos_in_array(std::array<T, N> &pieces, const PieceColor 
             piece.set_piece_color(piece_color);
             board.at(pos.col).at(pos.row) = &piece;
             std::cout << "Set " << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color())
-                      << " (" << pos.col << ", " << pos.row << ")" << std::endl;
+                      << "  " << pos.to_algebraic() << std::endl;
             break;
         }
     }
@@ -37,7 +37,7 @@ void Board::print_piece_array(const std::array<T, N> &pieces) const
         if (piece.get_position().col != -1)
         {
             std::cout << get_piece_unicode(piece.get_piece_type(), piece.get_piece_color())
-                      << " (" << piece.get_position().col << ", " << piece.get_position().row << ")" << std::endl;
+                      << "  " << piece.get_position().to_algebraic() << std::endl;
         }
     }
 }
@@ -45,8 +45,8 @@ void Board::print_piece_array(const std::array<T, N> &pieces) const
 void Board::move_piece_pos_in_array(Piece *piece, const Position &start, const Position &end)
 {
     std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
-              << " moved: (" << start.col << ", " << start.row << ") -> ("
-              << end.col << ", " << end.row << ")" << std::endl;
+              << " moved: " << start.to_algebraic() << " -> "
+              << end.to_algebraic() << std::endl;
     piece->set_position(end);
     board.at(start.col).at(start.row) = nullptr;
     board.at(end.col).at(end.row) = piece;
@@ -56,7 +56,7 @@ void Board::remove_piece_pos_in_array(Piece *piece)
 {
     Position piece_pos = piece->get_position();
     std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
-              << " (" << piece_pos.col << ", " << piece_pos.row << ") captured." << std::endl;
+              << "  " << piece_pos.to_algebraic() << " captured." << std::endl;
     board.at(piece_pos.col).at(piece_pos.row);
     piece->set_position(Position(-1, -1));
 
@@ -315,8 +315,6 @@ void Board::spawn_piece(const PieceType piece_type, const PieceColor piece_color
 
 void Board::move_piece(const Position &start, const Position &end)
 {
-    std::cout << "Command: (" << start.col << ", " << start.row << ") -> ("
-              << end.col << ", " << end.row << ")" << std::endl;
 
     // Ensure the start and end positions are valid
     if (!is_position_on_board(start))
@@ -329,6 +327,9 @@ void Board::move_piece(const Position &start, const Position &end)
         std::cout << "Invalid: End position is out of bounds." << std::endl;
         return;
     }
+
+    std::cout << "Command: " << start.to_algebraic() << " -> "
+              << end.to_algebraic() << std::endl;
 
     // Get the pointer of the considered piece at the start position
     Piece *piece = get_piece(start);
@@ -435,10 +436,18 @@ void Board::print_active_pieces() const
 
 void Board::draw() const
 {
-    const std::string horizontal_line = "   +---+---+---+---+---+---+---+---+";
-
     std::cout << std::endl
               << std::endl;
+
+    // Print column labels at the top
+    std::cout << "   ";
+    for (int col = 0; col < BOARD_SIZE - 1; ++col)
+    {
+        std::cout << "  " << static_cast<char>('a' + col) << " ";
+    }
+    std::cout << std::endl;
+
+    const std::string horizontal_line = "   +---+---+---+---+---+---+---+---+";
 
     for (int i = BOARD_SIZE - 1; i >= 1; --i)
     {
@@ -463,16 +472,20 @@ void Board::draw() const
                 std::cout << " " << pieceUnicode << " ";
             }
         }
-        std::cout << "|" << std::endl;
+
+        std::cout << "|";
+
+        // Print row number
+        std::cout << " " << i << " " << std::endl;
     }
 
     std::cout << horizontal_line << std::endl;
 
     // Print column labels at the bottom
     std::cout << "   ";
-    for (int col = 1; col < BOARD_SIZE; ++col)
+    for (int col = 0; col < BOARD_SIZE - 1; ++col)
     {
-        std::cout << "  " << col << " ";
+        std::cout << "  " << static_cast<char>('a' + col) << " ";
     }
     std::cout << std::endl
               << std::endl;

@@ -8,8 +8,43 @@ struct Position
     int col;
     int row;
 
+    // Default constructor
     Position(int c = -1, int r = -1)
         : col(c), row(r) {}
+
+    // Constructor from algebraic notation
+    Position(const std::string &algebraic)
+    {
+        if (algebraic.length() == 2 &&
+            algebraic[0] >= 'a' &&
+            algebraic[0] <= 'h' &&
+            algebraic[1] >= '1' &&
+            algebraic[1] <= '8')
+        {
+            col = algebraic[0] - 'a' + 1;
+            row = algebraic[1] - '1' + 1;
+        }
+        else
+        {
+            std::cout << "Invalid algebraic notation: " << algebraic << "." << std::endl;
+            col = -1;
+            row = -1;
+        }
+    }
+
+    // Convert the position to algebraic notation
+    std::string to_algebraic() const
+    {
+        if (col < 1 || col > 8 || row < 1 || row > 8)
+        {
+            std::cout << "Invalid algebraic notation." << std::endl;
+        }
+
+        char col_alg = 'a' + (col - 1); // Convert column number to file character
+        char row_alg = '1' + (row - 1); // Convert row number to rank character
+
+        return std::string(1, col_alg) + row_alg;
+    }
 };
 
 // Enum representing different types of pieces
@@ -65,4 +100,7 @@ public:
 
     // Gets the abbrevation of the piece color
     PieceColor get_piece_color() const;
+
+    // // Gets the position in algebraic notation
+    // std::string to_algebraic() const;
 };
