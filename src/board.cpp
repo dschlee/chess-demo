@@ -57,7 +57,7 @@ void Board::remove_piece_pos_in_array(Piece *piece)
     Position piece_pos = piece->get_position();
     std::cout << get_piece_unicode(piece->get_piece_type(), piece->get_piece_color())
               << "  " << piece_pos.to_algebraic() << " captured." << std::endl;
-    board.at(piece_pos.col).at(piece_pos.row);
+    board.at(piece_pos.col).at(piece_pos.row) = nullptr;
     piece->set_position(Position(-1, -1));
 
     switch (static_cast<char>(piece->get_piece_color()))

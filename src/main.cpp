@@ -91,8 +91,33 @@ void spawn_piece_menu(Board &board)
 
 void remove_piece_menu(Board &board)
 {
-    // TODO
-    std::cout << "TODO" << std::endl;
+    std::string position_input;
+
+    // Get and validate position input
+    std::cout << "Enter position of the piece to remove in algebraic notation (e.g. a2): ";
+    std::getline(std::cin >> std::ws, position_input);
+
+    if (position_input.length() == 2 &&
+        position_input[0] >= 'a' && position_input[0] <= 'h' &&
+        position_input[1] >= '1' && position_input[1] <= '8')
+    {
+        Position pos(position_input);
+        Piece *piece = board.get_piece(pos);
+
+        // Remove piece if one is located at the given position
+        if (piece)
+        {
+            board.remove_piece_pos_in_array(piece);
+        }
+        else
+        {
+            std::cout << "No piece found at position " << pos.to_algebraic() << "." << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "Invalid input format: Please enter a valid chess position (e.g. a2)." << std::endl;
+    }
 }
 
 /**
@@ -160,49 +185,17 @@ int main()
  */
 // int main()
 // {
-// Board board;
-// board.draw();
+//     Board board;
+//     board.draw();
 
-// board.spawn_piece(PieceType::Rook, PieceColor::White, Position("c2"));
-// board.spawn_piece(PieceType::Bishop, PieceColor::Black, Position("b1"));
-// board.print_active_pieces();
-// board.draw();
+//     board.spawn_piece(PieceType::Pawn, PieceColor::White, Position("a2"));
+//     board.spawn_piece(PieceType::Knight, PieceColor::Black, Position("b3"));
+//     board.print_active_pieces();
+//     board.draw();
 
-// board.move_piece(Position("c2"), Position("j4"));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position("b1"), Position("c-1"));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(1, 1), Position(3, 1));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(5, 1), Position(2, 3));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(5, 1), Position(5, 6));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(1, 2), Position(1, 1));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(1, 2), Position(2, 3));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(2, 3), Position(5, 6));
-// board.draw();
-// board.print_active_pieces();
-
-// board.move_piece(Position(2, 3), Position(-1, 0));
-// board.draw();
-// board.print_active_pieces();
+//     board.move_piece(Position("a2"), Position("b3"));
+//     board.draw();
+//     board.print_active_pieces();
 
 //     std::cout << std::endl;
 //     return 0;
